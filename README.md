@@ -37,3 +37,33 @@ sabendo o que esperar de sua interface. Lembrando que você não deve despejar
 tudo para fora, você deve contar a historia passo após passo até chegar em seu
 nível mais avançado sabendo o que exatamente quer pensando em casos que
 contemple até mesmo iterações de uso da mesma.
+
+Você não deve ser groceiro e implementar algo pobre quando tem a devida
+oportunidade, para isto você deve práticar todos os dias, disciplinas que
+entreguem maior aptidão no uso de suas ferramentas. Desenhos são formas
+interessantes de se conectar com a aplicação que você vai desenvolver, mas
+normalmente tomam tempo, então salvo a dada cituação nós vamos mostrar como
+fazer o uso adequado de todos os recursos presentes em Javascript e Typescript
+por sua vez.
+
+### Lógica de negócio - Busca por texto
+
+Você deve pensar no seguinte quando esta desenvolvendo uma aplicação e a
+quantidade de pessoas presente no projeto conta e a fragmentação das tarefas
+devem estar bem claras para você dar continuidade, estimar tempo é um tarefa
+extremamente dificil então optamos sempre por estimar dado a sua complexidade.
+Você deve ter isto bem claro em sua mente, então vamos a primeira tarefa.
+
+app.js
+
+```
+'use strict';
+
+const assert = require('assert');
+
+assert.ok(search('foo', 'foobar'));
+```
+
+Neste ponto eu poderia estimar que a complexidade desta tarefa é de um ponto com
+o limite de oito pontos. O que devemos fazer e completar a criação do código
+acima com uma implementação que cubra os requisitos da asserção.
