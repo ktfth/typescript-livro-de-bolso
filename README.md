@@ -143,5 +143,34 @@ function times(term, text) {
 }
 assert.equal(times('baz', 'bazfoobarbaz'), 2);
 
-assert.deepEqual(match('baz', 'foobarbaz'), ['foobarbaz']);
+assert.deepEqual(match('baz', 'foobarbaz'), 'foobarbaz');
 ```
+
+Os pontos de complexidade foram um para cada uma das tarefas, por ser bastante
+simples de cobrir os casos de uso, mas isto não significa que a tua aplicação
+esta bem testada. Para garantirmos o funcionamento de uma aplicação nós devemos
+ir além do esperado e cobrir casos com os devidos erros que ela deve retornar.
+
+```
+'use strict';
+const assert = require('assert');
+
+function search(term, text) {
+  return (new RegExp(term)).test(text);
+}
+assert.ok(search('foo', 'foobar'));
+
+function times(term, text) {
+  return text.match((new RegExp(term, 'g'))).length;
+}
+assert.equal(times('baz', 'bazfoobarbaz'), 2);
+
+function match(term, text) {
+  return text.match(new RegExp(term)).input;
+}
+assert.equal(match('baz', 'foobarbaz'), 'foobarbaz');
+```
+
+Após falharmos o código passou, e temos aqui um primeiro ponto de refatoração do
+código que deve ser feito apenas quando tudo esta passando. Até aqui nada de
+muito complexo foi encontrado mas temos uma quantidade de código consideravel.
