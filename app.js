@@ -76,3 +76,24 @@ assert.ok(txt.search('buzz'));
 txt.setContent('fuzzbarfuzzbuzzfuzz');
 assert.equal(txt.times('fuzz'), 3);
 assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
+
+const isTTY = process.stdin.isTTY;
+const { Transform } = require('stream');
+const args = process.argv.slice(2);
+
+function textMatchContentTransformFactory() {
+  const opts = {
+    transform(raw, encoding, callback) {
+      let text = new Text(raw.toString());
+      if (text.search(args[0])) {
+        this.push(Buffer.from(text.match(args[0])));
+      }
+      callback();
+    }
+  };
+  return new Transform(opts);
+}
+
+if (!isTTY) {
+  process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
+}

@@ -274,4 +274,136 @@ qualidade maior no reuso.
 Você deve começar tudo em um mesmo lugar, mesmo que fique gigante o seu arquivo
 até alcançar uma versão estavel do objetivo final, isto só vai beneficiar o seu
 conhecimento do que esta acontecendo e se adaptar a diferentes tipos de
-ambientes entregando maior agilidade.
+ambientes entregando maior agilidade. Dado este fato, nós podemos estimar
+esta entrega por volto dos oito pontos de complexidade.
+
+### Lógica de negócio - Construindo a interface com o sistema de arquivos
+
+Neste ponto vamos definir dois tipos de possibilidades que são as seguintes:
+
+* Atraveçar os arquivos em busca do termo procurado
+* Entrada de dados através de uma canalização padrão
+
+Estamos em um ponto que é importante projetar nossos recursos para cobrir mais
+casos de uso que só estarão mais visiveis conforme a evolução do programa,
+com isto é simples de visualizar qual o panorama final.
+
+Nesta implementação estamos utilizando recursos do Node.js e o ideal é que
+possamos contar também com uma implementação que possa ser executada utilizando
+o Deno, que deixaremos para o futuro do programa quando todos os recursos
+estiverem prontos para o usuário final.
+
+```
+'use strict';
+const assert = require('assert');
+
+function thrownArgumentException(text, term) {
+  if (typeof term !== 'string' || typeof text !== 'string') {
+    throw new Error('Each argument, must be a string');
+  }
+}
+
+function search(term, text) {
+  thrownArgumentException(term, text);
+  return (new RegExp(term)).test(text);
+}
+assert.ok(search('foo', 'foobar'));
+assert.throws(() => {
+  search(1, 10);
+}, {
+  name: 'Error',
+  message: 'Each argument, must be a string'
+});
+
+function times(term, text) {
+  thrownArgumentException(term, text);
+  return text.match((new RegExp(term, 'g'))).length;
+}
+assert.equal(times('baz', 'bazfoobarbaz'), 2);
+assert.throws(() => {
+  times(1, 10);
+}, {
+  name: 'Error',
+  message: 'Each argument, must be a string'
+});
+
+function match(term, text) {
+  thrownArgumentException(term, text);
+  return text.match(new RegExp(term)).input;
+}
+assert.equal(match('baz', 'foobarbaz'), 'foobarbaz');
+assert.throws(() => {
+  match(1, 10);
+}, {
+  name: 'Error',
+  message: 'Each argument, must be a string'
+});
+
+class Text {
+  constructor(content) {
+    this.content = content;
+    this.setContent = this.setContent.bind(this);
+    this.getContent = this.getContent.bind(this);
+    this.search = this.search.bind(this);
+    this.times = this.times.bind(this);
+    this.match = this.match.bind(this);
+  }
+
+  setContent(value) {
+    this.content = value;
+    return this;
+  }
+
+  getContent() {
+    return this.content;
+  }
+
+  search(term) { return search(term, this.getContent()); }
+  times(term) { return times(term, this.getContent()); }
+  match(term) { return match(term, this.getContent()); }
+}
+
+let txt = new Text('foobarbaz');
+assert.ok(txt instanceof Text);
+assert.equal(txt.content, 'foobarbaz', 'Text content not settled');
+assert.ok(txt.setContent('foobarbazbuzz') instanceof Text);
+assert.equal(txt.getContent(), 'foobarbazbuzz');
+assert.ok(txt.search('buzz'));
+txt.setContent('fuzzbarfuzzbuzzfuzz');
+assert.equal(txt.times('fuzz'), 3);
+assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
+
+const isTTY = process.stdin.isTTY;
+const { Transform } = require('stream');
+const args = process.argv.slice(2);
+
+function textMatchContentTransformFactory() {
+  const opts = {
+    transform(raw, encoding, callback) {
+      let text = new Text(raw.toString());
+      if (text.search(args[0])) {
+        this.push(Buffer.from(text.match(args[0])));
+      }
+      callback();
+    }
+  };
+  return new Transform(opts);
+}
+
+if (!isTTY) {
+  process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
+}
+```
+
+O comportamento puro da leitura de uma entrada foi completo através de uma linha
+de processamento, com isto podemos estimar que esta tarefa tenha em torno de
+três pontos de complexidade para verificar se o tipo de entrada não é TTY
+recolher argumentos da linha de comando e depois transformar a entrada para algo
+que possamos manipular com as funções presentes em nossa implementação passada e
+de fato fazer o que estavamos imaginando verificando se o termo esta presente,
+e depois extraindo esta entrada. Como previsto varios comportamentos podem ser
+inseridos para melhorar nossa aplicação, mas isto vai ser abordado quando
+portarmos nossa aplicação para Typescript ou seja o melhor esta por vir.
+
+Não devemos ter apego com as nossas aplicações, mas toda mudança deve ser
+introduzida com uma boa reflexão.
