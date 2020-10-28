@@ -270,3 +270,8 @@ para estudar afundo quais os pros e contras de se utilizar uma aplicação escri
 em Typescript. Temos que práticar desta forma para ter total controle e visão do
 que estamos fazendo. Alguns padrões de projeção estão surgindo para termos uma
 qualidade maior no reuso.
+
+Você deve começar tudo em um mesmo lugar, mesmo que fique gigante o seu arquivo
+até alcançar uma versão estavel do objetivo final, isto só vai beneficiar o seu
+conhecimento do que esta acontecendo e se adaptar a diferentes tipos de
+ambientes entregando maior agilidade.
