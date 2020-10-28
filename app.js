@@ -42,3 +42,37 @@ assert.throws(() => {
   name: 'Error',
   message: 'Each argument, must be a string'
 });
+
+class Text {
+  constructor(content) {
+    this.content = content;
+    this.setContent = this.setContent.bind(this);
+    this.getContent = this.getContent.bind(this);
+    this.search = this.search.bind(this);
+    this.times = this.times.bind(this);
+    this.match = this.match.bind(this);
+  }
+
+  setContent(value) {
+    this.content = value;
+    return this;
+  }
+
+  getContent() {
+    return this.content;
+  }
+
+  search(term) { return search(term, this.getContent()); }
+  times(term) { return times(term, this.getContent()); }
+  match(term) { return match(term, this.getContent()); }
+}
+
+let txt = new Text('foobarbaz');
+assert.ok(txt instanceof Text);
+assert.equal(txt.content, 'foobarbaz', 'Text content not settled');
+assert.ok(txt.setContent('foobarbazbuzz') instanceof Text);
+assert.equal(txt.getContent(), 'foobarbazbuzz');
+assert.ok(txt.search('buzz'));
+txt.setContent('fuzzbarfuzzbuzzfuzz');
+assert.equal(txt.times('fuzz'), 3);
+assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
