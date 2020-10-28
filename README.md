@@ -66,4 +66,82 @@ assert.ok(search('foo', 'foobar'));
 
 Neste ponto eu poderia estimar que a complexidade desta tarefa é de um ponto com
 o limite de oito pontos. O que devemos fazer e completar a criação do código
-acima com uma implementação que cubra os requisitos da asserção.
+acima com uma implementação que cubra os requisitos da asserção. Lembrando que
+temos em mente a busca de texto que pode ser muito mais do que o teste atual.
+Mas precisamos iniciar a projeção e conforme evoluirmos com ela, cobriremos um
+cenario maior que o atual. Executando este código nós teremos uma exceção
+presente no nosso código que é o esperado.
+
+```
+'use strict';
+const assert = require('assert');
+
+function search(term, text) {
+  return (new RegExp(term)).test(text);
+}
+assert.ok(search('foo', 'foobar'));
+```
+
+Com este código nós temos a primeira fase do nosso código completa, então
+podemos seguir executando o código e vendo que o teste passou, não vamos
+permanecer com esta implementação por muito tempo, porque devemos passar de
+fase o mais rápido possível. Temos uma função de busca que retorna um booleano e
+agora teremos uma que retorna a quantidade de vezes que o termo aparece no texto
+em inteiro.
+
+```
+'use strict';
+const assert = require('assert');
+
+function search(term, text) {
+  return (new RegExp(term)).test(text);
+}
+assert.ok(search('foo', 'foobar'));
+
+assert.equal(times('baz', 'bazfoobarbaz'), 2);
+```
+
+Com isto feito podemos seguir, e devemos alcançar 3 funções principais para o
+nosso programa que são:
+
+* Search
+* Times
+* Match
+
+É tudo o que precisamos para o comportamento básico de nossa aplicação.
+
+```
+'use strict';
+const assert = require('assert');
+
+function search(term, text) {
+  return (new RegExp(term)).test(text);
+}
+assert.ok(search('foo', 'foobar'));
+
+function times(term, text) {
+  return text.match((new RegExp(term, 'g'))).length;
+}
+assert.equal(times('baz', 'bazfoobarbaz'), 2);
+```
+
+Com isto nós temos duas de nossas funções implementadas, note que todas elas
+fazem o uso de RegExp para retornar o comportamento esperado por seus testes.
+Perceba que padrões estão surgindo para nós tirarmos vatagem de suas repetições.
+
+```
+'use strict';
+const assert = require('assert');
+
+function search(term, text) {
+  return (new RegExp(term)).test(text);
+}
+assert.ok(search('foo', 'foobar'));
+
+function times(term, text) {
+  return text.match((new RegExp(term, 'g'))).length;
+}
+assert.equal(times('baz', 'bazfoobarbaz'), 2);
+
+assert.deepEqual(match('baz', 'foobarbaz'), ['foobarbaz']);
+```
