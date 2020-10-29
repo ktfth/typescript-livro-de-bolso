@@ -81,11 +81,12 @@ const isTTY = process.stdin.isTTY;
 const { Transform } = require('stream');
 const args = process.argv.slice(2);
 
-function textMatchContentTransformFactory() {
+function textMatchContentTransformFactory(filePath='') {
   const opts = {
     transform(raw, encoding, callback) {
       let text = new Text(raw.toString());
       if (text.search(args[0])) {
+        if (!!filePath) console.log(filePath);
         this.push(Buffer.from(text.match(args[0])));
       }
       callback();
@@ -94,6 +95,31 @@ function textMatchContentTransformFactory() {
   return new Transform(opts);
 }
 
+const fs = require('fs');
+const path = require('path');
+
+function traverse(dirPath, dirs=[]) {
+  let dir = fs.readdirSync(dirPath, {
+    withFileTypes: true
+  });
+  let nestedDirs = dir.filter(curr => curr.isDirectory() &&
+                                      !(curr.name.indexOf('.') === 0));
+  let nestedFiles = dir.filter(curr => curr.isFile() &&
+                                       !(curr.name.indexOf('.') === 0));
+  console.log(dir);
+  console.log(nestedDirs);
+
+  for (let file of nestedFiles) {
+    let curr = path.resolve(dirPath, file.name);
+    let currStream = fs.createReadStream(curr);
+
+    currStream.pipe(textMatchContentTransformFactory(curr)).pipe(process.stdout);
+  }
+}
+
 if (!isTTY) {
   process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
+} else if (isTTY) {
+  // traverse directories
+  traverse(process.cwd());
 }
