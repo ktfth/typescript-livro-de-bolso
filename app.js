@@ -115,6 +115,11 @@ function traverse(dirPath, dirs=[]) {
 
     currStream.pipe(textMatchContentTransformFactory(curr)).pipe(process.stdout);
   }
+
+  for (let entrypoint of nestedDirs) {
+    let curr = path.resolve(dirPath, entrypoint.name);
+    traverse(curr);
+  }
 }
 
 if (!isTTY) {
