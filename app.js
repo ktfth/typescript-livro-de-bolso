@@ -106,8 +106,6 @@ function traverse(dirPath, dirs=[]) {
                                       !(curr.name.indexOf('.') === 0));
   let nestedFiles = dir.filter(curr => curr.isFile() &&
                                        !(curr.name.indexOf('.') === 0));
-  console.log(dir);
-  console.log(nestedDirs);
 
   for (let file of nestedFiles) {
     let curr = path.resolve(dirPath, file.name);
