@@ -551,3 +551,12 @@ if (!isTTY) {
   traverse(process.cwd());
 }
 ```
+
+Neste ponto, devemos analisar quais as próximas refatorações importantes a serem
+feitas, que podem ser as seguintes:
+
+* Separar os testes
+* Optimizar o uso de memoria e processamento de dados
+* Implementar um algoritimo de busca mais eficiente
+* Devolver o numero da linha que ocorre o padrão de texto que estamos buscando
+* Sumarizar o texto na ocasião em especifico quando o padrão aparece
