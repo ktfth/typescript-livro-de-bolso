@@ -407,3 +407,9 @@ portarmos nossa aplicação para Typescript ou seja o melhor esta por vir.
 
 Não devemos ter apego com as nossas aplicações, mas toda mudança deve ser
 introduzida com uma boa reflexão.
+
+### Portabilidade - Vamos ao Typescript
+
+Com o nosso programa funcionando de forma estavél na versão que paramos, vamos
+a parte mais interessante do proceso que é executar a refatoração para o
+Typescript.
