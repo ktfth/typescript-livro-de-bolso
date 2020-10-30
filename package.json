@@ -1,0 +1,26 @@
+{
+  "name": "typescript-livro-de-bolso",
+  "version": "1.0.0",
+  "description": "## Introdução",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ktfth/typescript-livro-de-bolso.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ktfth/typescript-livro-de-bolso/issues"
+  },
+  "homepage": "https://github.com/ktfth/typescript-livro-de-bolso#readme",
+  "dependencies": {
+    "@types/node": "^14.14.6"
+  }
+}
