@@ -7,11 +7,11 @@ function thrownArgumentException(text, term) {
   }
 }
 
-function search(term, text) {
+export function search(term, text): boolean {
   thrownArgumentException(term, text);
   return (new RegExp(term)).test(text);
 }
-assert.ok(search('foo', 'foobar'));
+// assert.ok(search('foo', 'foobar'));
 assert.throws(() => {
   search(1, 10);
 }, {
@@ -124,7 +124,7 @@ function traverse(dirPath, dirs=[]) {
 
 if (!isTTY) {
   process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
-} else if (isTTY) {
+} else if (isTTY && !module.parent) {
   // traverse directories
   traverse(process.cwd());
 }
