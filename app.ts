@@ -1,5 +1,5 @@
 'use strict';
-const assert = require('assert');
+// const assert = require('assert');
 
 function thrownArgumentException(text, term) {
   if (typeof term !== 'string' || typeof text !== 'string') {
@@ -12,36 +12,36 @@ export function search(term, text): boolean {
   return (new RegExp(term)).test(text);
 }
 // assert.ok(search('foo', 'foobar'));
-assert.throws(() => {
-  search(1, 10);
-}, {
-  name: 'Error',
-  message: 'Each argument, must be a string'
-});
+// assert.throws(() => {
+//   search(1, 10);
+// }, {
+//   name: 'Error',
+//   message: 'Each argument, must be a string'
+// });
 
-function times(term, text) {
+export function times(term, text) {
   thrownArgumentException(term, text);
   return text.match((new RegExp(term, 'g'))).length;
 }
-assert.equal(times('baz', 'bazfoobarbaz'), 2);
-assert.throws(() => {
-  times(1, 10);
-}, {
-  name: 'Error',
-  message: 'Each argument, must be a string'
-});
+// assert.equal(times('baz', 'bazfoobarbaz'), 2);
+// assert.throws(() => {
+//   times(1, 10);
+// }, {
+//   name: 'Error',
+//   message: 'Each argument, must be a string'
+// });
 
 function match(term, text) {
   thrownArgumentException(term, text);
   return text.match(new RegExp(term)).input;
 }
-assert.equal(match('baz', 'foobarbaz'), 'foobarbaz');
-assert.throws(() => {
-  match(1, 10);
-}, {
-  name: 'Error',
-  message: 'Each argument, must be a string'
-});
+// assert.equal(match('baz', 'foobarbaz'), 'foobarbaz');
+// assert.throws(() => {
+//   match(1, 10);
+// }, {
+//   name: 'Error',
+//   message: 'Each argument, must be a string'
+// });
 
 class TextContent {
   content: string;
@@ -69,15 +69,15 @@ class TextContent {
   match(term) { return match(term, this.getContent()); }
 }
 
-let txt = new TextContent('foobarbaz');
-assert.ok(txt instanceof TextContent);
-assert.equal(txt.content, 'foobarbaz', 'TextContent content not settled');
-assert.ok(txt.setContent('foobarbazbuzz') instanceof TextContent);
-assert.equal(txt.getContent(), 'foobarbazbuzz');
-assert.ok(txt.search('buzz'));
-txt.setContent('fuzzbarfuzzbuzzfuzz');
-assert.equal(txt.times('fuzz'), 3);
-assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
+// let txt = new TextContent('foobarbaz');
+// assert.ok(txt instanceof TextContent);
+// assert.equal(txt.content, 'foobarbaz', 'TextContent content not settled');
+// assert.ok(txt.setContent('foobarbazbuzz') instanceof TextContent);
+// assert.equal(txt.getContent(), 'foobarbazbuzz');
+// assert.ok(txt.search('buzz'));
+// txt.setContent('fuzzbarfuzzbuzzfuzz');
+// assert.equal(txt.times('fuzz'), 3);
+// assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
 
 const isTTY = process.stdin.isTTY;
 const { Transform } = require('stream');
