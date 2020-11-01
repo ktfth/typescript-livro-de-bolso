@@ -4,6 +4,7 @@ const assert = require('assert');
 import { search } from './app';
 import { times } from './app';
 import { match } from './app';
+import { TextContent } from './app';
 
 describe('Text Content Search', () => {
   it('should search for a term', () => {
@@ -47,5 +48,17 @@ describe('Text Content Match', () => {
       name: 'Error',
       message: 'Each argument, must be a string'
     });
+  });
+});
+
+describe('Text Content', () => {
+  let txt = null;
+
+  before(() => {
+    txt = new TextContent('foobarbaz');
+  });
+
+  it('should be an instance of', () => {
+    assert.ok(txt instanceof TextContent);
   });
 });
