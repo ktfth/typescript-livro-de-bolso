@@ -3,6 +3,7 @@ const assert = require('assert');
 
 import { search } from './app';
 import { times } from './app';
+import { match } from './app';
 
 describe('Text Content Search', () => {
   it('should search for a term', () => {
@@ -27,6 +28,21 @@ describe('Text Content Times', () => {
   it('should throws arguments exception for times', () => {
     assert.throws(() => {
       times(1, 10);
+    }, {
+      name: 'Error',
+      message: 'Each argument, must be a string'
+    });
+  });
+});
+
+describe('Text Content Match', () => {
+  it('should have match of term', () => {
+    assert.equal(match('baz', 'foobarbaz'), 'foobarbaz');
+  });
+
+  it('should throws arguments exception for match', () => {
+    assert.throws(() => {
+      match(1, 10);
     }, {
       name: 'Error',
       message: 'Each argument, must be a string'

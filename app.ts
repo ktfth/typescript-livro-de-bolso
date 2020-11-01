@@ -31,7 +31,7 @@ export function times(term, text) {
 //   message: 'Each argument, must be a string'
 // });
 
-function match(term, text) {
+export function match(term, text) {
   thrownArgumentException(term, text);
   return text.match(new RegExp(term)).input;
 }
