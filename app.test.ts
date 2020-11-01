@@ -61,4 +61,8 @@ describe('Text Content', () => {
   it('should be an instance of', () => {
     assert.ok(txt instanceof TextContent);
   });
+
+  it('should be an content', () => {
+    assert.ok(txt.content, 'foobarbaz', 'TextContent content not settled');
+  });
 });
