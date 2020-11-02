@@ -560,3 +560,203 @@ feitas, que podem ser as seguintes:
 * Implementar um algoritimo de busca mais eficiente
 * Devolver o numero da linha que ocorre o padrão de texto que estamos buscando
 * Sumarizar o texto na ocasião em especifico quando o padrão aparece
+
+Nesta primeira refatoração nós separamos um arquivo para o programa e outro
+para os testes, e este mesmo padrão se replica para novas mudanças.
+
+app.ts
+
+```
+'use strict';
+
+function thrownArgumentException(text, term) {
+  if (typeof term !== 'string' || typeof text !== 'string') {
+    throw new Error('Each argument, must be a string');
+  }
+}
+
+export function search(term, text): boolean {
+  thrownArgumentException(term, text);
+  return (new RegExp(term)).test(text);
+}
+
+export function times(term, text) {
+  thrownArgumentException(term, text);
+  return text.match((new RegExp(term, 'g'))).length;
+}
+
+export function match(term, text) {
+  thrownArgumentException(term, text);
+  return text.match(new RegExp(term)).input;
+}
+
+export class TextContent {
+  content: string;
+
+  constructor(content: string) {
+    this.content = content;
+    this.setContent = this.setContent.bind(this);
+    this.getContent = this.getContent.bind(this);
+    this.search = this.search.bind(this);
+    this.times = this.times.bind(this);
+    this.match = this.match.bind(this);
+  }
+
+  setContent(value) {
+    this.content = value;
+    return this;
+  }
+
+  getContent() {
+    return this.content;
+  }
+
+  search(term) { return search(term, this.getContent()); }
+  times(term) { return times(term, this.getContent()); }
+  match(term) { return match(term, this.getContent()); }
+}
+
+const isTTY = process.stdin.isTTY;
+const { Transform } = require('stream');
+const args = process.argv.slice(2);
+
+function textMatchContentTransformFactory(filePath='') {
+  const opts = {
+    transform(raw, encoding, callback) {
+      let text = new TextContent(raw.toString());
+      if (text.search(args[0])) {
+        if (!!filePath) console.log(filePath);
+        this.push(Buffer.from(text.match(args[0])));
+      }
+      callback();
+    }
+  };
+  return new Transform(opts);
+}
+
+const fs = require('fs');
+const path = require('path');
+
+function traverse(dirPath, dirs=[]) {
+  let dir = fs.readdirSync(dirPath, {
+    withFileTypes: true
+  });
+  let nestedDirs = dir.filter(curr => curr.isDirectory() &&
+                                      !(curr.name.indexOf('.') === 0));
+  let nestedFiles = dir.filter(curr => curr.isFile() &&
+                                       !(curr.name.indexOf('.') === 0));
+
+  for (let file of nestedFiles) {
+    let curr = path.resolve(dirPath, file.name);
+    let currStream = fs.createReadStream(curr);
+
+    currStream.pipe(textMatchContentTransformFactory(curr)).pipe(process.stdout);
+  }
+
+  for (let entrypoint of nestedDirs) {
+    let curr = path.resolve(dirPath, entrypoint.name);
+    traverse(curr);
+  }
+}
+
+if (!isTTY) {
+  process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
+} else if (isTTY && !module.parent) {
+  // traverse directories
+  traverse(process.cwd());
+}
+```
+
+app.test.ts
+
+```
+'use strict';
+const assert = require('assert');
+
+import { search } from './app';
+import { times } from './app';
+import { match } from './app';
+import { TextContent } from './app';
+
+describe('Text Content Search', () => {
+  it('should search for a term', () => {
+    assert.ok(search('foo', 'foobar'));
+  });
+
+  it('should throws arguments exception for search', () => {
+    assert.throws(() => {
+      search(1, 10);
+    }, {
+      name: 'Error',
+      message: 'Each argument, must be a string'
+    });
+  });
+});
+
+describe('Text Content Times', () => {
+  it('should have times of a term', () => {
+    assert.equal(times('baz', 'bazfoobarbaz'), 2);
+  });
+
+  it('should throws arguments exception for times', () => {
+    assert.throws(() => {
+      times(1, 10);
+    }, {
+      name: 'Error',
+      message: 'Each argument, must be a string'
+    });
+  });
+});
+
+describe('Text Content Match', () => {
+  it('should have match of term', () => {
+    assert.equal(match('baz', 'foobarbaz'), 'foobarbaz');
+  });
+
+  it('should throws arguments exception for match', () => {
+    assert.throws(() => {
+      match(1, 10);
+    }, {
+      name: 'Error',
+      message: 'Each argument, must be a string'
+    });
+  });
+});
+
+describe('Text Content', () => {
+  let txt = null;
+
+  before(() => {
+    txt = new TextContent('foobarbaz');
+  });
+
+  it('should be an instance of', () => {
+    assert.ok(txt instanceof TextContent);
+  });
+
+  it('should be an content', () => {
+    assert.ok(txt.content, 'foobarbaz', 'TextContent content not settled');
+  });
+
+  it('should be set a content', () => {
+    assert.ok(txt.setContent('foobarbazbuzz') instanceof TextContent);
+  });
+
+  it('should be get a content', () => {
+    assert.equal(txt.getContent(), 'foobarbazbuzz');
+  });
+
+  it('should be search by a term in content', () => {
+    assert.ok(txt.search('buzz'));
+  });
+
+  it('should be have times of term occured on the content', () => {
+    txt.setContent('fuzzbarfuzzbuzzfuzz');
+    assert.equal(txt.times('fuzz'), 3);
+  });
+
+  it('should be match by term on the content', () => {
+    assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
+  });
+});
+```
