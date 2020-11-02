@@ -103,6 +103,10 @@ describe('Text Content processing buffer', () => {
     assert.ok(txtBuff.content, Buffer.from('foobarbaz'), 'TextContent content not settled');
   });
 
+  it('should be a buffer', () => {
+    assert.ok(txtBuff.isBuffer(Buffer.from('bar')));
+  });
+
   it('should be search by a term in content as buffer', () => {
     assert.ok(txtBuff.search(Buffer.from('bar')));
   });
