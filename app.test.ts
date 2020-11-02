@@ -65,4 +65,25 @@ describe('Text Content', () => {
   it('should be an content', () => {
     assert.ok(txt.content, 'foobarbaz', 'TextContent content not settled');
   });
+
+  it('should be set a content', () => {
+    assert.ok(txt.setContent('foobarbazbuzz') instanceof TextContent);
+  });
+
+  it('should be get a content', () => {
+    assert.equal(txt.getContent(), 'foobarbazbuzz');
+  });
+
+  it('should be search by a term in content', () => {
+    assert.ok(txt.search('buzz'));
+  });
+
+  it('should be have times of term occured on the content', () => {
+    txt.setContent('fuzzbarfuzzbuzzfuzz');
+    assert.equal(txt.times('fuzz'), 3);
+  });
+
+  it('should be match by term on the content', () => {
+    assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
+  });
 });

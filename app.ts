@@ -47,16 +47,6 @@ export class TextContent {
   match(term) { return match(term, this.getContent()); }
 }
 
-// let txt = new TextContent('foobarbaz');
-// assert.ok(txt instanceof TextContent);
-// assert.equal(txt.content, 'foobarbaz', 'TextContent content not settled');
-// assert.ok(txt.setContent('foobarbazbuzz') instanceof TextContent);
-// assert.equal(txt.getContent(), 'foobarbazbuzz');
-// assert.ok(txt.search('buzz'));
-// txt.setContent('fuzzbarfuzzbuzzfuzz');
-// assert.equal(txt.times('fuzz'), 3);
-// assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
-
 const isTTY = process.stdin.isTTY;
 const { Transform } = require('stream');
 const args = process.argv.slice(2);
