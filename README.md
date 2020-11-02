@@ -760,3 +760,5 @@ describe('Text Content', () => {
   });
 });
 ```
+
+Com as mudanças feitas podemos seguir para as próximas implementações.

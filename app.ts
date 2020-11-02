@@ -22,9 +22,9 @@ export function match(term, text) {
 }
 
 export class TextContent {
-  content: string;
+  content: any;
 
-  constructor(content: string) {
+  constructor(content: any) {
     this.content = content;
     this.setContent = this.setContent.bind(this);
     this.getContent = this.getContent.bind(this);
@@ -42,7 +42,17 @@ export class TextContent {
     return this.content;
   }
 
-  search(term) { return search(term, this.getContent()); }
+  isBuffer(value) {
+    return value.constructor.toString().indexOf('Buffer') > -1;
+  }
+
+  search(term) {
+    if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
+      return this.getContent().indexOf(term) > -1;
+    }
+    return search(term, this.getContent());
+  }
+
   times(term) { return times(term, this.getContent()); }
   match(term) { return match(term, this.getContent()); }
 }
