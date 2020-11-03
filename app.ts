@@ -86,10 +86,10 @@ const args = process.argv.slice(2);
 function textMatchContentTransformFactory(filePath='') {
   const opts = {
     transform(raw, encoding, callback) {
-      let text = new TextContent(raw.toString());
-      if (text.search(args[0])) {
+      let text = new TextContent(raw);
+      if (!!args.length && text.search(Buffer.from(args[0]))) {
         if (!!filePath) console.log(filePath);
-        this.push(Buffer.from(text.match(args[0])));
+        this.push(text.match(Buffer.from(args[0])));
       }
       callback();
     }
@@ -113,6 +113,8 @@ function traverse(dirPath, dirs=[]) {
     let curr = path.resolve(dirPath, file.name);
     let currStream = fs.createReadStream(curr);
 
+    currStream.setMaxListeners(100000);
+
     currStream.pipe(textMatchContentTransformFactory(curr)).pipe(process.stdout);
   }
 
@@ -121,6 +123,10 @@ function traverse(dirPath, dirs=[]) {
     traverse(curr);
   }
 }
+
+process.stdin.setEncoding('utf-8');
+
+process.stdout.setMaxListeners(100000);
 
 if (!isTTY) {
   process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
