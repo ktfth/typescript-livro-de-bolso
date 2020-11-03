@@ -762,3 +762,274 @@ describe('Text Content', () => {
 ```
 
 Com as mudanças feitas podemos seguir para as próximas implementações.
+A optimização foi feita através da utilização do buffer, como fonte para nossas
+manipulações, com isto nós podemos analisar que foram utilizados em torno de
+seis pontos de complexidade para ela ser concluida.
+
+app.test.ts
+
+```
+'use strict';
+const assert = require('assert');
+
+import { search } from './app';
+import { times } from './app';
+import { match } from './app';
+import { TextContent } from './app';
+
+describe('Text Content Search', () => {
+  it('should search for a term', () => {
+    assert.ok(search('foo', 'foobar'));
+  });
+
+  it('should throws arguments exception for search', () => {
+    assert.throws(() => {
+      search(1, 10);
+    }, {
+      name: 'Error',
+      message: 'Each argument, must be a string'
+    });
+  });
+});
+
+describe('Text Content Times', () => {
+  it('should have times of a term', () => {
+    assert.equal(times('baz', 'bazfoobarbaz'), 2);
+  });
+
+  it('should throws arguments exception for times', () => {
+    assert.throws(() => {
+      times(1, 10);
+    }, {
+      name: 'Error',
+      message: 'Each argument, must be a string'
+    });
+  });
+});
+
+describe('Text Content Match', () => {
+  it('should have match of term', () => {
+    assert.equal(match('baz', 'foobarbaz'), 'foobarbaz');
+  });
+
+  it('should throws arguments exception for match', () => {
+    assert.throws(() => {
+      match(1, 10);
+    }, {
+      name: 'Error',
+      message: 'Each argument, must be a string'
+    });
+  });
+});
+
+describe('Text Content', () => {
+  let txt = null;
+
+  before(() => {
+    txt = new TextContent('foobarbaz');
+  });
+
+  it('should be an instance of', () => {
+    assert.ok(txt instanceof TextContent);
+  });
+
+  it('should be an content', () => {
+    assert.ok(txt.content, 'foobarbaz', 'TextContent content not settled');
+  });
+
+  it('should be set a content', () => {
+    assert.ok(txt.setContent('foobarbazbuzz') instanceof TextContent);
+  });
+
+  it('should be get a content', () => {
+    assert.equal(txt.getContent(), 'foobarbazbuzz');
+  });
+
+  it('should be search by a term in content', () => {
+    assert.ok(txt.search('buzz'));
+  });
+
+  it('should be have times of term occured on the content', () => {
+    txt.setContent('fuzzbarfuzzbuzzfuzz');
+    assert.equal(txt.times('fuzz'), 3);
+  });
+
+  it('should be match by term on the content', () => {
+    assert.equal(txt.match('buzz'), 'fuzzbarfuzzbuzzfuzz');
+  });
+});
+
+describe('Text Content processing buffer', () => {
+  let txtBuff = null;
+
+  before(() => {
+    txtBuff = new TextContent(Buffer.from('foobarbaz'));
+  });
+
+  it('should be an instance of', () => {
+    assert.ok(txtBuff instanceof TextContent);
+  });
+
+  it('should be an content', () => {
+    assert.ok(txtBuff.content, Buffer.from('foobarbaz'), 'TextContent content not settled');
+  });
+
+  it('should be a buffer', () => {
+    assert.ok(txtBuff.isBuffer(Buffer.from('bar')));
+  });
+
+  it('should be search by a term in content as buffer', () => {
+    assert.ok(txtBuff.search(Buffer.from('bar')));
+  });
+
+  it('should be have times of term occured on the content as buffer', () => {
+    txtBuff.setContent(Buffer.from('fuzzbarfuzzbuzzfuzz'));
+    assert.equal(txtBuff.times(Buffer.from('fuzz')), 3);
+  });
+
+  it('should be match by term on the content as buffer', () => {
+    assert.equal(txtBuff.match(Buffer.from('buzz')), 'fuzzbarfuzzbuzzfuzz');
+  })
+});
+```
+
+app.ts
+
+```
+'use strict';
+
+function thrownArgumentException(text, term) {
+  if (typeof term !== 'string' || typeof text !== 'string') {
+    throw new Error('Each argument, must be a string');
+  }
+}
+
+export function search(term, text): boolean {
+  thrownArgumentException(term, text);
+  return (new RegExp(term)).test(text);
+}
+
+export function times(term, text) {
+  thrownArgumentException(term, text);
+  return text.match((new RegExp(term, 'g'))).length;
+}
+
+export function match(term, text) {
+  thrownArgumentException(term, text);
+  return text.match(new RegExp(term)).input;
+}
+
+export class TextContent {
+  content: any;
+
+  constructor(content: any) {
+    this.content = content;
+    this.setContent = this.setContent.bind(this);
+    this.getContent = this.getContent.bind(this);
+    this.isBuffer = this.isBuffer.bind(this);
+    this.search = this.search.bind(this);
+    this.times = this.times.bind(this);
+    this.match = this.match.bind(this);
+  }
+
+  setContent(value) {
+    this.content = value;
+    return this;
+  }
+
+  getContent() {
+    return this.content;
+  }
+
+  isBuffer(value) {
+    return value.constructor.toString().indexOf('Buffer') > -1;
+  }
+
+  search(term) {
+    if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
+      return this.getContent().indexOf(term) > -1;
+    }
+    return search(term, this.getContent());
+  }
+
+  times(term, t=-1, o=0) {
+    if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
+      let out = o;
+      let curr = this.getContent().indexOf(term, t + 1);
+      if (curr > -1) {
+        out += 1;
+        return this.times(term, t=curr + 1, out);
+      }
+      return out;
+    }
+    return times(term, this.getContent());
+  }
+
+  match(term) {
+    if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
+      let out = Buffer.from('');
+      if (this.search(term)) {
+        out = this.getContent();
+      }
+      return out;
+    }
+    return match(term, this.getContent());
+  }
+}
+
+const isTTY = process.stdin.isTTY;
+const { Transform } = require('stream');
+const args = process.argv.slice(2);
+
+function textMatchContentTransformFactory(filePath='') {
+  const opts = {
+    transform(raw, encoding, callback) {
+      let text = new TextContent(raw);
+      if (!!args.length && text.search(Buffer.from(args[0]))) {
+        if (!!filePath) console.log(filePath);
+        this.push(text.match(Buffer.from(args[0])));
+      }
+      callback();
+    }
+  };
+  return new Transform(opts);
+}
+
+const fs = require('fs');
+const path = require('path');
+
+function traverse(dirPath, dirs=[]) {
+  let dir = fs.readdirSync(dirPath, {
+    withFileTypes: true
+  });
+  let nestedDirs = dir.filter(curr => curr.isDirectory() &&
+                                      !(curr.name.indexOf('.') === 0));
+  let nestedFiles = dir.filter(curr => curr.isFile() &&
+                                       !(curr.name.indexOf('.') === 0));
+
+  for (let file of nestedFiles) {
+    let curr = path.resolve(dirPath, file.name);
+    let currStream = fs.createReadStream(curr);
+
+    currStream.setMaxListeners(100000);
+
+    currStream.pipe(textMatchContentTransformFactory(curr)).pipe(process.stdout);
+  }
+
+  for (let entrypoint of nestedDirs) {
+    let curr = path.resolve(dirPath, entrypoint.name);
+    traverse(curr);
+  }
+}
+
+process.stdin.setEncoding('utf-8');
+
+process.stdout.setMaxListeners(100000);
+
+if (!isTTY) {
+  process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
+} else if (isTTY && !module.parent) {
+  // traverse directories
+  traverse(process.cwd());
+}
+```
