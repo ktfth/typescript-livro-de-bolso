@@ -107,7 +107,12 @@ function textMatchContentTransformFactory(filePath='') {
       let text = new TextContent(raw);
       if (!!args.length && text.search(Buffer.from(args[0]))) {
         if (!!filePath) console.log(filePath);
-        this.push(text.match(Buffer.from(args[0])));
+        let matches = text.match(Buffer.from(args[0]));
+        let lines = [];
+        Object.keys(matches).forEach(k => {
+          lines.push(`${k}:${matches[k].toString().replace((new RegExp(args[0], 'g')), '\x1b[100m' + args[0] + '\x1b[49m')}`);
+        });
+        this.push(Buffer.from(`${lines.join('\n')}\n`));
       }
       callback();
     }
