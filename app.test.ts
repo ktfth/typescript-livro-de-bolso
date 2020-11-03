@@ -117,6 +117,12 @@ describe('Text Content processing buffer', () => {
   });
 
   it('should be match by term on the content as buffer', () => {
-    assert.equal(txtBuff.match(Buffer.from('buzz')), 'fuzzbarfuzzbuzzfuzz');
-  })
+    assert.deepEqual(txtBuff.match(Buffer.from('buzz')), {1: Buffer.from('fuzzbarfuzzbuzzfuzz')});
+  });
+
+  it('should be match by line on the content as buffer', () => {
+    txtBuff.setContent(Buffer.from('fizzbuzz\nfizzbar\nfoobar'));
+    assert.deepEqual(txtBuff.match(Buffer.from('fizz')),
+                     {1: Buffer.from('fizzbuzz'), 2: Buffer.from('fizzbar')});
+  });
 });

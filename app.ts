@@ -69,9 +69,27 @@ export class TextContent {
 
   match(term) {
     if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
-      let out = Buffer.from('');
-      if (this.search(term)) {
-        out = this.getContent();
+      let out = {};
+      let lines = [];
+      let line = [];
+      for (let i = 0; i < this.getContent().length; i += 1) {
+        let chr = this.getContent()[i];
+        if (chr === Buffer.from('\n')[0]) {
+          lines.push(line);
+          line = [];
+        } else if (i === this.getContent().length - 1) {
+          line.push(chr);
+          lines.push(line);
+          line = [];
+        } else {
+          line.push(chr);
+        }
+      }
+      for (let i in lines) {
+        let curr = Buffer.from(lines[i]);
+        if (curr.indexOf(term) > -1) {
+          out[parseInt(i, 10) + 1] = curr;
+        }
       }
       return out;
     }
