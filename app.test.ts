@@ -110,4 +110,9 @@ describe('Text Content processing buffer', () => {
   it('should be search by a term in content as buffer', () => {
     assert.ok(txtBuff.search(Buffer.from('bar')));
   });
+
+  it('should be have times of term occured on the content as buffer', () => {
+    txtBuff.setContent(Buffer.from('fuzzbarfuzzbuzzfuzz'));
+    assert.equal(txtBuff.times(Buffer.from('fuzz')), 3);
+  });
 });

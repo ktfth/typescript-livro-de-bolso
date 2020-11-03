@@ -53,7 +53,18 @@ export class TextContent {
     return search(term, this.getContent());
   }
 
-  times(term) { return times(term, this.getContent()); }
+  times(term, t=-1, o=0) {
+    if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
+      let out = o;
+      let curr = this.getContent().indexOf(term, t + 1);
+      if (curr > -1) {
+        out += 1;
+        return this.times(term, t=curr + 1, out);
+      }
+      return out;
+    }
+    return times(term, this.getContent());
+  }
   match(term) { return match(term, this.getContent()); }
 }
 
