@@ -28,6 +28,7 @@ export class TextContent {
     this.content = content;
     this.setContent = this.setContent.bind(this);
     this.getContent = this.getContent.bind(this);
+    this.isBuffer = this.isBuffer.bind(this);
     this.search = this.search.bind(this);
     this.times = this.times.bind(this);
     this.match = this.match.bind(this);
@@ -65,7 +66,17 @@ export class TextContent {
     }
     return times(term, this.getContent());
   }
-  match(term) { return match(term, this.getContent()); }
+
+  match(term) {
+    if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
+      let out = Buffer.from('');
+      if (this.search(term)) {
+        out = this.getContent();
+      }
+      return out;
+    }
+    return match(term, this.getContent());
+  }
 }
 
 const isTTY = process.stdin.isTTY;

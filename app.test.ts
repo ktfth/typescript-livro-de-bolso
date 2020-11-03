@@ -115,4 +115,8 @@ describe('Text Content processing buffer', () => {
     txtBuff.setContent(Buffer.from('fuzzbarfuzzbuzzfuzz'));
     assert.equal(txtBuff.times(Buffer.from('fuzz')), 3);
   });
+
+  it('should be match by term on the content as buffer', () => {
+    assert.equal(txtBuff.match(Buffer.from('buzz')), 'fuzzbarfuzzbuzzfuzz');
+  })
 });
