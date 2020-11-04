@@ -1197,3 +1197,15 @@ if (!isTTY) {
   traverse(process.cwd());
 }
 ```
+
+Com isto estabilizamos a nossa versão e podemos fazer o que bem entender com
+ela desta forma, inclusives melhorias de como o programa funciona. Fica o
+exercicio que pode ser executado por você, esta livre para vasculhar e
+implementar melhorias no funcionamento do programa.
+
+Este programa pode ser extendido de várias formas e alcançar um nível de
+conhecimento mais polido e útil, para o seu dia a dia. Estamos abertos para
+novas implementações até que finalizemos a obra por completo, de forma coletiva
+e inteligênte.
+
+Obrigado a você que leu e opinou sobre o livro.
