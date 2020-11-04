@@ -56,7 +56,7 @@ Você deve ter isto bem claro em sua mente, então vamos a primeira tarefa.
 
 app.js
 
-```
+```js
 'use strict';
 
 const assert = require('assert');
@@ -72,7 +72,7 @@ Mas precisamos iniciar a projeção e conforme evoluirmos com ela, cobriremos um
 cenario maior que o atual. Executando este código nós teremos uma exceção
 presente no nosso código que é o esperado.
 
-```
+```js
 'use strict';
 const assert = require('assert');
 
@@ -89,7 +89,7 @@ fase o mais rápido possível. Temos uma função de busca que retorna um boolea
 agora teremos uma que retorna a quantidade de vezes que o termo aparece no texto
 em inteiro.
 
-```
+```js
 'use strict';
 const assert = require('assert');
 
@@ -110,7 +110,7 @@ nosso programa que são:
 
 É tudo o que precisamos para o comportamento básico de nossa aplicação.
 
-```
+```js
 'use strict';
 const assert = require('assert');
 
@@ -129,7 +129,7 @@ Com isto nós temos duas de nossas funções implementadas, note que todas elas
 fazem o uso de RegExp para retornar o comportamento esperado por seus testes.
 Perceba que padrões estão surgindo para nós tirarmos vatagem de suas repetições.
 
-```
+```js
 'use strict';
 const assert = require('assert');
 
@@ -151,7 +151,7 @@ simples de cobrir os casos de uso, mas isto não significa que a tua aplicação
 esta bem testada. Para garantirmos o funcionamento de uma aplicação nós devemos
 ir além do esperado e cobrir casos com os devidos erros que ela deve retornar.
 
-```
+```js
 'use strict';
 const assert = require('assert');
 
@@ -182,7 +182,7 @@ uma nova perspectiva de como construir aplicações seguras e robustas. Este é 
 código atual que vai receber varias novas implemntações mas esta é a completude
 do mesmo.
 
-```
+```js
 'use strict';
 const assert = require('assert');
 
@@ -293,7 +293,7 @@ possamos contar também com uma implementação que possa ser executada utilizan
 o Deno, que deixaremos para o futuro do programa quando todos os recursos
 estiverem prontos para o usuário final.
 
-```
+```js
 'use strict';
 const assert = require('assert');
 
@@ -419,7 +419,7 @@ padrões mais sofisticados aqui esta nossas mudanças.
 
 app.ts
 
-```
+```ts
 'use strict';
 const assert = require('assert');
 
@@ -566,7 +566,7 @@ para os testes, e este mesmo padrão se replica para novas mudanças.
 
 app.ts
 
-```
+```ts
 'use strict';
 
 function thrownArgumentException(text, term) {
@@ -669,7 +669,7 @@ if (!isTTY) {
 
 app.test.ts
 
-```
+```ts
 'use strict';
 const assert = require('assert');
 
@@ -768,7 +768,7 @@ seis pontos de complexidade para ela ser concluida.
 
 app.test.ts
 
-```
+```ts
 'use strict';
 const assert = require('assert');
 
@@ -895,7 +895,7 @@ describe('Text Content processing buffer', () => {
 
 app.ts
 
-```
+```ts
 'use strict';
 
 function thrownArgumentException(text, term) {
@@ -1036,7 +1036,7 @@ if (!isTTY) {
 
 Estamos avançando para uma versão bastante promissora que é a seguinte.
 
-```
+```ts
 'use strict';
 
 function thrownArgumentException(text, term) {
