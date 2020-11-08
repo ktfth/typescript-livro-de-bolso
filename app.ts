@@ -97,6 +97,8 @@ export class TextContent {
   }
 }
 
+export class Lines {}
+
 const isTTY = process.stdin.isTTY;
 const { Transform } = require('stream');
 const args = process.argv.slice(2);

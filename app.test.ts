@@ -5,6 +5,7 @@ import { search } from './app';
 import { times } from './app';
 import { match } from './app';
 import { TextContent } from './app';
+import { Lines } from './app';
 
 describe('Text Content Search', () => {
   it('should search for a term', () => {
@@ -124,5 +125,17 @@ describe('Text Content processing buffer', () => {
     txtBuff.setContent(Buffer.from('fizzbuzz\nfizzbar\nfoobar'));
     assert.deepEqual(txtBuff.match(Buffer.from('fizz')),
                      {1: Buffer.from('fizzbuzz'), 2: Buffer.from('fizzbar')});
+  });
+});
+
+describe('Text Content processing lines', () => {
+  let lines = null;
+
+  before(() => {
+    lines = new Lines();
+  });
+
+  it('should be an instance of', () => {
+    assert.ok(lines instanceof Lines);
   });
 });
