@@ -1220,4 +1220,21 @@ manter uma analise constante.
 ### Injeção de parametros
 
 ```js
+'use strict';
+const assert = require('assert');
+const { exec } = require('child_process');
+
+exec('echo "foobar" | node app.js foo', (error, stdout, stderr) => {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    return;
+  }
+  assert.equal(stdout, '1:\x1b[100m' + 'foo' + '\x1b[49mbar\n');
+});
 ```
+
+Anter de portarmos a nossa solução para o Deno cobriremos vários casos de uso
+que a ferramenta pode ser utilizada. Com este código nos testamos uma das formas
+que ele pode ser utilizada. Mas em outras baterias de testes descobrimos que o
+processo aglutina quando executa o modo varredura, por isto devemos investigar
+nossa implementação e decidirmos se é interessante manter este tipo de cobertura.
