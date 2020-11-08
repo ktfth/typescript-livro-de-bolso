@@ -1209,3 +1209,10 @@ novas implementações até que finalizemos a obra por completo, de forma coleti
 e inteligênte.
 
 Obrigado a você que leu e opinou sobre o livro.
+
+## Projeção - Polindo sua ferramenta
+
+Após utilizar a ferramenta logo vemos que existem varios modos de se fazer a
+mesma coisa, mas como podemos realizar esta tarefa enquanto estamos projetando
+a ferramenta? É simples, aplicaremos tecnicas que servem com o propósito de
+manter uma analise constante. 
