@@ -1238,3 +1238,17 @@ que a ferramenta pode ser utilizada. Com este código nos testamos uma das forma
 que ele pode ser utilizada. Mas em outras baterias de testes descobrimos que o
 processo aglutina quando executa o modo varredura, por isto devemos investigar
 nossa implementação e decidirmos se é interessante manter este tipo de cobertura.
+
+Neste caso utilizei algumas linhas de python que é ótimo para casos como estes
+em sistemas linux e unix por ter um suporte grande a funções que não precisam de
+tanto desprendimento de tempo e esforço.
+
+```python
+import os
+
+node = 'node app.js biz'
+
+node_output = os.popen(node).read()
+
+assert (len(node_output) > 0)
+```
