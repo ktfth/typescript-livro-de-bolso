@@ -1216,3 +1216,8 @@ Após utilizar a ferramenta logo vemos que existem varios modos de se fazer a
 mesma coisa, mas como podemos realizar esta tarefa enquanto estamos projetando
 a ferramenta? É simples, aplicaremos tecnicas que serve com o propósito de
 manter uma analise constante.
+
+### Injeção de parametros
+
+```js
+```
