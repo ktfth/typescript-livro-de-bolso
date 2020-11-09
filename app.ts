@@ -1,24 +1,34 @@
 'use strict';
 
-function thrownArgumentException(text, term) {
+function thrownArgumentException(text: string, term: string): void {
   if (typeof term !== 'string' || typeof text !== 'string') {
     throw new Error('Each argument, must be a string');
   }
 }
 
-export function search(term, text): boolean {
+export function search(term: string, text: string): boolean {
   thrownArgumentException(term, text);
   return (new RegExp(term)).test(text);
 }
 
-export function times(term, text) {
+export function times(term: string, text: string): number {
   thrownArgumentException(term, text);
-  return text.match((new RegExp(term, 'g'))).length;
+  let out = 0;
+  let matched = text.match((new RegExp(term, 'g')));
+  if (matched !== null) {
+    out = matched.length;
+  }
+  return out;
 }
 
-export function match(term, text) {
+export function match(term: string, text: string): string {
   thrownArgumentException(term, text);
-  return text.match(new RegExp(term)).input;
+  let out = '';
+  let matched = text.match(new RegExp(term));
+  if (matched !== null && matched.input !== undefined) {
+    out = matched.input;
+  }
+  return out;
 }
 
 export class TextContent {
@@ -34,7 +44,7 @@ export class TextContent {
     this.match = this.match.bind(this);
   }
 
-  setContent(value) {
+  setContent(value: any) {
     this.content = value;
     return this;
   }
