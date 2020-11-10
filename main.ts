@@ -53,7 +53,7 @@ export class TextContent {
     return this.content;
   }
 
-  isBuffer(value: Uint8Array) {
+  isBuffer(value: Deno.Buffer) {
     return value.constructor.toString().indexOf('Buffer') > -1;
   }
 
@@ -79,12 +79,12 @@ export class TextContent {
 
   match(term: any) {
     if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
-      let out = {};
+      let out: { [k: string]: any } = {};
       let lines = [];
       let line = [];
       for (let i = 0; i < this.getContent().length; i += 1) {
         let chr = this.getContent()[i];
-        if (chr === Buffer.from('\n')[0]) {
+        if (chr === '\n'.charCodeAt(0)) {
           lines.push(line);
           line = [];
         } else if (i === this.getContent().length - 1) {
@@ -96,9 +96,9 @@ export class TextContent {
         }
       }
       for (let i in lines) {
-        let curr = Buffer.from(lines[i]);
+        let curr = lines[i];
         if (curr.indexOf(term) > -1) {
-          out[parseInt(i, 10) + 1] = curr;
+          out[(parseInt(i, 10) + 1)] = curr;
         }
       }
       return out;
@@ -109,63 +109,63 @@ export class TextContent {
 
 export class Lines {}
 
-const isTTY = process.stdin.isTTY;
-const { Transform } = require('stream');
-const args = process.argv.slice(2);
-
-function textMatchContentTransformFactory(filePath='') {
-  const opts = {
-    transform(raw, encoding, callback) {
-      let text = new TextContent(raw);
-      if (!!args.length && text.search(Buffer.from(args[0]))) {
-        if (!!filePath) console.log(filePath);
-        let matches = text.match(Buffer.from(args[0]));
-        let lines = [];
-        Object.keys(matches).forEach(k => {
-          lines.push(`${k}:${matches[k].toString().replace((new RegExp(args[0], 'g')), '\x1b[100m' + args[0] + '\x1b[49m')}`);
-        });
-        this.push(Buffer.from(`${lines.join('\n')}\n`));
-      }
-      callback();
-    }
-  };
-  return new Transform(opts);
-}
-
-const fs = require('fs');
-const path = require('path');
-
-function traverse(dirPath, dirs=[]) {
-  let dir = fs.readdirSync(dirPath, {
-    withFileTypes: true
-  });
-  let nestedDirs = dir.filter(curr => curr.isDirectory() &&
-                                      !(curr.name.indexOf('.') === 0));
-  let nestedFiles = dir.filter(curr => curr.isFile() &&
-                                       !(curr.name.indexOf('.') === 0));
-
-  for (let file of nestedFiles) {
-    let curr = path.resolve(dirPath, file.name);
-    let currStream = fs.createReadStream(curr);
-
-    currStream.setMaxListeners(100000);
-
-    currStream.pipe(textMatchContentTransformFactory(curr)).pipe(process.stdout);
-  }
-
-  for (let entrypoint of nestedDirs) {
-    let curr = path.resolve(dirPath, entrypoint.name);
-    traverse(curr);
-  }
-}
-
-process.stdin.setEncoding('utf-8');
-
-process.stdout.setMaxListeners(100000);
-
-if (!isTTY) {
-  process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
-} else if (isTTY && !module.parent) {
-  // traverse directories
-  traverse(process.cwd());
-}
+// const isTTY = process.stdin.isTTY;
+// const { Transform } = require('stream');
+// const args = process.argv.slice(2);
+//
+// function textMatchContentTransformFactory(filePath='') {
+//   const opts = {
+//     transform(raw, encoding, callback) {
+//       let text = new TextContent(raw);
+//       if (!!args.length && text.search(new Deno.Buffer(args[0]))) {
+//         if (!!filePath) console.log(filePath);
+//         let matches = text.match(new Deno.Buffer(args[0]));
+//         let lines = [];
+//         Object.keys(matches).forEach(k => {
+//           lines.push(`${k}:${matches[k].toString().replace((new RegExp(args[0], 'g')), '\x1b[100m' + args[0] + '\x1b[49m')}`);
+//         });
+//         this.push(new Deno.Buffer(`${lines.join('\n')}\n`));
+//       }
+//       callback();
+//     }
+//   };
+//   return new Transform(opts);
+// }
+//
+// const fs = require('fs');
+// const path = require('path');
+//
+// function traverse(dirPath, dirs=[]) {
+//   let dir = fs.readdirSync(dirPath, {
+//     withFileTypes: true
+//   });
+//   let nestedDirs = dir.filter(curr => curr.isDirectory() &&
+//                                       !(curr.name.indexOf('.') === 0));
+//   let nestedFiles = dir.filter(curr => curr.isFile() &&
+//                                        !(curr.name.indexOf('.') === 0));
+//
+//   for (let file of nestedFiles) {
+//     let curr = path.resolve(dirPath, file.name);
+//     let currStream = fs.createReadStream(curr);
+//
+//     currStream.setMaxListeners(100000);
+//
+//     currStream.pipe(textMatchContentTransformFactory(curr)).pipe(process.stdout);
+//   }
+//
+//   for (let entrypoint of nestedDirs) {
+//     let curr = path.resolve(dirPath, entrypoint.name);
+//     traverse(curr);
+//   }
+// }
+//
+// process.stdin.setEncoding('utf-8');
+//
+// process.stdout.setMaxListeners(100000);
+//
+// if (!isTTY) {
+//   process.stdin.pipe(textMatchContentTransformFactory()).pipe(process.stdout);
+// } else if (isTTY && !module.parent) {
+//   // traverse directories
+//   traverse(process.cwd());
+// }

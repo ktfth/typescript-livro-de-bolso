@@ -1252,3 +1252,7 @@ node_output = os.popen(node).read()
 
 assert (len(node_output) > 0)
 ```
+
+Depois de testarmos o minimo do uso da linha de comando, nós vamos dar atenção
+a implementação util em outros motores de execução, neste caso nós devemos
+seguir o que esta sendo levantado como exceção pelo motor, neste caso o Deno.
