@@ -109,6 +109,12 @@ export class TextContent {
 
 export class Lines {}
 
+for await (const dirEntry of Deno.readDir(Deno.cwd())) {
+  if (dirEntry.isFile) {
+    console.log('do the search on the file', dirEntry.name);
+  }
+}
+
 // const isTTY = process.stdin.isTTY;
 // const { Transform } = require('stream');
 // const args = process.argv.slice(2);
