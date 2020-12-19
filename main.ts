@@ -77,7 +77,7 @@ export class TextContent {
     return times(term, this.getContent());
   }
 
-  match(term: any) {
+  match(term: any): any {
     if (this.isBuffer(term) && this.isBuffer(this.getContent())) {
       let out: { [k: string]: any } = {};
       let lines = [];
@@ -109,9 +109,19 @@ export class TextContent {
 
 export class Lines {}
 
-for await (const dirEntry of Deno.readDir(Deno.cwd())) {
-  if (dirEntry.isFile) {
-    console.log('do the search on the file', dirEntry.name);
+if (!!Deno.args.length) {
+  for await (const dirEntry of Deno.readDir(Deno.cwd())) {
+    if (dirEntry.isFile) {
+      let decoder = new TextDecoder('utf-8');
+      let raw = await Deno.readFile(Deno.cwd() + '/' + dirEntry.name);
+      let data = decoder.decode(raw);
+      let text = new TextContent(data.toString());
+      if (text.search(Deno.args[0])) {
+        let matches = text.match(Deno.args[0]);
+        let output = matches.replace((new RegExp(Deno.args[0], 'g')), '\x1b[100m' + Deno.args[0] + '\x1b[49m');
+        console.log(`${output}`);
+      }
+    }
   }
 }
 
