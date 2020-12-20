@@ -1,5 +1,7 @@
 'use strict';
 
+import { existsSync } from 'https://deno.land/std/fs/mod.ts';
+
 function thrownArgumentException(text: string, term: string): void {
   if (typeof term !== 'string' || typeof text !== 'string') {
     throw new Error('Each argument, must be a string');
@@ -109,20 +111,33 @@ export class TextContent {
 
 export class Lines {}
 
-if (!!Deno.args.length && Deno.isatty(Deno.stdin.rid)) {
-  for await (const dirEntry of Deno.readDir(Deno.cwd())) {
-    if (dirEntry.isFile) {
-      let decoder = new TextDecoder('utf-8');
-      let raw = await Deno.readFile(Deno.cwd() + '/' + dirEntry.name);
-      let data = decoder.decode(raw);
-      let text = new TextContent(data.toString());
-      if (text.search(Deno.args[0])) {
-        let matches = text.match(Deno.args[0]);
-        let output = matches.replace((new RegExp(Deno.args[0], 'g')), '\x1b[100m' + Deno.args[0] + '\x1b[49m');
-        console.log(`${output}`);
+async function traverse(dir=Deno.cwd()) {
+  if (Deno.cwd() !== dir) {
+    dir = Deno.cwd() + '/' + dir;
+  } if (existsSync(dir)) {
+    for await (const dirEntry of Deno.readDir(dir)) {
+      if (dirEntry.isFile) {
+        let decoder = new TextDecoder('utf-8');
+        let rawPath = Deno.cwd() + '/' + dirEntry.name;
+        if (existsSync(rawPath)) {
+          let raw = await Deno.readFile(rawPath);
+          let data = decoder.decode(raw);
+          let text = new TextContent(data.toString());
+          if (text.search(Deno.args[0])) {
+            let matches = text.match(Deno.args[0]);
+            let output = matches.replace((new RegExp(Deno.args[0], 'g')), '\x1b[100m' + Deno.args[0] + '\x1b[49m');
+            console.log(`${output}`);
+          }
+        }
+      } else if (dirEntry.isDirectory) {
+        traverse(dirEntry.name);
       }
     }
   }
+}
+
+if (!!Deno.args.length && Deno.isatty(Deno.stdin.rid)) {
+  traverse();
 } else if (!!Deno.args.length && !Deno.isatty(Deno.stdin.rid)) {
   (async () => {
     let decoder = new TextDecoder('utf-8');
