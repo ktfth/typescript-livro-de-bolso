@@ -109,7 +109,7 @@ export class TextContent {
 
 export class Lines {}
 
-if (!!Deno.args.length) {
+if (!!Deno.args.length && Deno.isatty(Deno.stdin.rid)) {
   for await (const dirEntry of Deno.readDir(Deno.cwd())) {
     if (dirEntry.isFile) {
       let decoder = new TextDecoder('utf-8');
@@ -123,6 +123,18 @@ if (!!Deno.args.length) {
       }
     }
   }
+} else if (!!Deno.args.length && !Deno.isatty(Deno.stdin.rid)) {
+  (async () => {
+    let decoder = new TextDecoder('utf-8');
+    let raw = await Deno.readAll(Deno.stdin);
+    let data = decoder.decode(raw);
+    let text = new TextContent(data.toString());
+    if (text.search(Deno.args[0])) {
+      let matches = text.match(Deno.args[0]);
+      let output = matches.replace((new RegExp(Deno.args[0], 'g')), '\x1b[100m' + Deno.args[0] + '\x1b[49m');
+      console.log(`${output}`);
+    }
+  })();
 }
 
 // const isTTY = process.stdin.isTTY;
