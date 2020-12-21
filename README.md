@@ -1423,3 +1423,9 @@ se a entrada era do tipo "tty" para se comportar da maneira adequada. Ao executa
 este código você vai encontrar o necessário para saber o que fazer após. E esta
 é a nossa finalização do programa, e podemos melhorar muito mais este programa.
 Vamos para a parte de analise e refatoração.
+
+Neste momento podemos realizar que nossas duas versões estão maduras o suficiente
+para receber modificações e também para vermos que elas tem algo em comum que tem
+uma importancia muito grande. A forma com que lidamos com o texto fazendo buscas e
+combinações de igualdade para obter um resultado tem similaridades e é onde podemos
+visualizar que é onde o Javascript teve importancia na construção.
