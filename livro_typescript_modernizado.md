@@ -18,6 +18,7 @@
   - [4. Uso Avançado de Tipos](#4-uso-avançado-de-tipos)
     - [Tipos de União e Interseção](#tipos-de-união-e-interseção)
   - [5. Considerações Finais](#5-considerações-finais)
+  - [6. Bônus: Programação Avançada e Stack Trace Legível](#6-bônus-programação-avançada-e-stack-trace-legível)
 
 ## <a name="introducao"></a>1. Introdução
 
@@ -299,3 +300,19 @@ Neste exemplo, `LoggableSerializable` é um tipo que deve ser `Loggable` e `Seri
 ## <a name="consideracoes-finais"></a>5. Considerações Finais
 
 Para ver a versão original, consulte o [README.md](README.md).
+
+## <a name="bonus-programacao-avancada-e-stack-trace-legivel"></a>6. Bônus: Programação Avançada e Stack Trace Legível
+
+Esta seção aborda técnicas avançadas para programar em TypeScript com clareza e objetividade, configurando o compilador para fornecer mensagens detalhadas e um stack trace legível que facilita a identificação de problemas. Por meio de práticas avançadas, é possível obter rastreamentos de erro que apontam exatamente a origem do problema, auxiliando na depuração e na manutenção do código.
+
+Exemplo de configuração no tsconfig.json:
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "traceResolution": true
+  }
+}
+
+Essas configurações ajudam a identificar problemas com clareza e tornam o processo de depuração mais eficiente.
