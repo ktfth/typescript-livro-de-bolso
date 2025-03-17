@@ -120,3 +120,5 @@ Aproveite os exemplos, adapte-os ao seu contexto e mantenha a evolução do seu 
 ---
 
 Explore mais no [Livro Typescript Modernizado](livro_typescript_modernizado.md).
+
+[Livro antigo](https://github.com/ktfth/typescript-livro-de-bolso/tree/11af1d4966f01752ae9fbcb20a629f306e647a80)
